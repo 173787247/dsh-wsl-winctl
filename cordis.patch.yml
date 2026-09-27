@@ -1,0 +1,5 @@
+- insert:
+    - id: dsh-wsl-winctl
+      name: dsh-wsl-winctl
+      config:
+        timeoutMs: 30000
