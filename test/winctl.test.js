@@ -40,3 +40,31 @@ describe("normalizeWindow", () => {
     assert.equal(normalizeWindow(undefined).handle, "");
   });
 });
+
+// ── state / topmost / close, added after the first release ──────────────────
+import { normalizeState } from "../lib/winctl.js";
+
+describe("the action set", () => {
+  it("covers every action the parameter enum advertises", () => {
+    assert.deepEqual(ACTIONS, ["windows", "state", "activate", "minimize", "maximize", "restore", "move", "topmost", "close"]);
+  });
+});
+
+describe("normalizeState", () => {
+  it("carries the flags a caller checks after acting", () => {
+    const s = normalizeState({ pid: 1, minimized: true, maximized: false, topmost: true, foreground: false });
+    assert.equal(s.minimized, true);
+    assert.equal(s.topmost, true);
+    assert.equal(s.maximized, false);
+  });
+  it("defaults every flag to false rather than undefined", () => {
+    const s = normalizeState({ pid: 1 });
+    for (const k of ["minimized", "maximized", "topmost", "foreground"]) assert.equal(s[k], false, k);
+  });
+  it("keeps the geometry fields from normalizeWindow", () => {
+    const s = normalizeState({ pid: 1, width: "800", height: 600, title: "x" });
+    assert.equal(s.width, 800);
+    assert.equal(s.height, 600);
+    assert.equal(s.title, "x");
+  });
+});
